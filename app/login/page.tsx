@@ -45,7 +45,7 @@ export default function LoginPage() {
                         Welcome Back
                     </CardTitle>
                     <CardDescription className="text-base">
-                        Sign in to continue to dcktrp Chat
+                        Sign in to continue to Chat Page
                     </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
@@ -84,7 +84,7 @@ export default function LoginPage() {
                     <CardFooter className="flex flex-col space-y-4">
                         <Button
                             type="submit"
-                            className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                            className="mt-4 w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                             disabled={isLoading}
                         >
                             {isLoading ? (

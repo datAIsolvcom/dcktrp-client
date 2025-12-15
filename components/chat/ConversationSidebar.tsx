@@ -47,7 +47,7 @@ export default function ConversationSidebar({
             <div className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                        dcktrp Chat
+                        Chat Testing
                     </h2>
                 </div>
                 <Button

@@ -73,7 +73,7 @@ export default function RegisterPage() {
                         Create Account
                     </CardTitle>
                     <CardDescription className="text-base">
-                        Sign up to start using dcktrp Chat
+                        Sign up to start using Chat Page
                     </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
@@ -175,7 +175,7 @@ export default function RegisterPage() {
                     <CardFooter className="flex flex-col space-y-4">
                         <Button
                             type="submit"
-                            className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                            className="mt-4 w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                             disabled={isLoading}
                         >
                             {isLoading ? (

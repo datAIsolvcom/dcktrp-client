@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dcktrp Chat",
+  title: "Chat Testing",
   description: "Chat application with RAG system",
 };
 
