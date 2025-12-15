@@ -5,6 +5,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import ConversationSidebar from '@/components/chat/ConversationSidebar';
 import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
+import ChatSettingsPanel, { ChatSettings } from '@/components/chat/ChatSettingsPanel';
 import { conversationsApi } from '@/lib/api/conversations';
 import { chatApi } from '@/lib/api/chat';
 import { Conversation, Message } from '@/types';
@@ -18,6 +19,16 @@ export default function ChatPage() {
     const [isLoadingConversations, setIsLoadingConversations] = useState(true);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const [isSending, setIsSending] = useState(false);
+
+    // Chat settings state
+    const [settings, setSettings] = useState<ChatSettings>({
+        mode: 'mix',
+        local_k: 5,
+        global_k: 10,
+        include_references: true,
+        division_filter: [],
+        access_filter: ['external'], // Default to external
+    });
 
     // Load conversations on mount
     useEffect(() => {
@@ -146,11 +157,13 @@ export default function ChatPage() {
             await chatApi.streamQuery(
                 {
                     query: content,
-                    mode: 'mix',
+                    mode: settings.mode,
                     stream: true,
-                    include_references: true,
-                    local_k: 5,
-                    global_k: 10,
+                    include_references: settings.include_references,
+                    local_k: settings.local_k,
+                    global_k: settings.global_k,
+                    ...(settings.division_filter.length > 0 ? { division_filter: settings.division_filter } : {}),
+                    ...(settings.access_filter.length > 0 ? { access_filter: settings.access_filter } : {}),
                     conversation_history: messages.slice(-3).map((m) => ({
                         role: m.role,
                         content: m.content,
@@ -215,6 +228,16 @@ export default function ChatPage() {
                     isLoading={isLoadingConversations}
                 />
                 <div className="flex-1 flex flex-col bg-white dark:bg-slate-950">
+                    {/* Header with settings */}
+                    <div className="border-b px-4 py-3 flex items-center justify-between bg-white dark:bg-slate-950">
+                        <h1 className="text-lg font-semibold">
+                            {currentConversationId
+                                ? conversations.find((c) => c.id === currentConversationId)?.title || 'Chat'
+                                : 'New Chat'}
+                        </h1>
+                        <ChatSettingsPanel settings={settings} onSettingsChange={setSettings} />
+                    </div>
+
                     <MessageList
                         messages={messages}
                         isLoading={isLoadingMessages}

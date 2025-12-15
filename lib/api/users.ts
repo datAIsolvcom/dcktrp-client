@@ -2,8 +2,12 @@ import apiClient from '../api-client';
 import { User, RegisterRequest } from '@/types';
 
 export const usersApi = {
-    async register(data: RegisterRequest): Promise<User> {
-        const response = await apiClient.post<User>('/api/users/', data);
+    async register(data: RegisterRequest, adminToken?: string): Promise<User> {
+        const response = await apiClient.post<User>('/api/users/', data, {
+            headers: adminToken ? {
+                'X-Admin-Token': adminToken,
+            } : {},
+        });
         return response.data;
     },
 

@@ -11,49 +11,50 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 
 export default function RegisterPage() {
-    const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        full_name: '',
-    });
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [adminToken, setAdminToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.username || !formData.email || !formData.password) {
+        // Validation
+        if (!username || !email || !password || !confirmPassword) {
             toast.error('Please fill in all required fields');
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (password !== confirmPassword) {
             toast.error('Passwords do not match');
             return;
         }
 
-        if (formData.password.length < 6) {
-            toast.error('Password must be at least 6 characters long');
+        if (password.length < 8) {
+            toast.error('Password must be at least 8 characters long');
+            return;
+        }
+
+        if (!adminToken) {
+            toast.error('Admin token is required for registration');
             return;
         }
 
         setIsLoading(true);
         try {
-            await usersApi.register({
-                username: formData.username,
-                email: formData.email,
-                password: formData.password,
-                full_name: formData.full_name || undefined,
-            });
+            await usersApi.register(
+                {
+                    username,
+                    email,
+                    password,
+                    full_name: fullName || undefined,
+                },
+                adminToken
+            );
             toast.success('Registration successful! Please log in.');
             router.push('/login');
         } catch (error: any) {
@@ -83,11 +84,10 @@ export default function RegisterPage() {
                             </Label>
                             <Input
                                 id="username"
-                                name="username"
                                 type="text"
                                 placeholder="Choose a username"
-                                value={formData.username}
-                                onChange={handleChange}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 disabled={isLoading}
                                 className="h-11"
                                 autoComplete="username"
@@ -102,12 +102,29 @@ export default function RegisterPage() {
                                 name="email"
                                 type="email"
                                 placeholder="your.email@example.com"
-                                value={formData.email}
-                                onChange={handleChange}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 disabled={isLoading}
                                 className="h-11"
                                 autoComplete="email"
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="adminToken" className="text-sm font-medium">
+                                Admin Token <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                id="adminToken"
+                                type="password"
+                                placeholder="Enter admin bearer token"
+                                value={adminToken}
+                                onChange={(e) => setAdminToken(e.target.value)}
+                                disabled={isLoading}
+                                className="h-11 font-mono text-xs"
+                            />
+                            <p className="text-xs text-gray-500">
+                                Required for creating new users (development only)
+                            </p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="full_name" className="text-sm font-medium">
@@ -115,11 +132,10 @@ export default function RegisterPage() {
                             </Label>
                             <Input
                                 id="full_name"
-                                name="full_name"
                                 type="text"
                                 placeholder="Your full name (optional)"
-                                value={formData.full_name}
-                                onChange={handleChange}
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
                                 disabled={isLoading}
                                 className="h-11"
                                 autoComplete="name"
@@ -131,11 +147,10 @@ export default function RegisterPage() {
                             </Label>
                             <Input
                                 id="password"
-                                name="password"
                                 type="password"
-                                placeholder="At least 6 characters"
-                                value={formData.password}
-                                onChange={handleChange}
+                                placeholder="At least 8 characters"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 disabled={isLoading}
                                 className="h-11"
                                 autoComplete="new-password"
@@ -147,11 +162,10 @@ export default function RegisterPage() {
                             </Label>
                             <Input
                                 id="confirmPassword"
-                                name="confirmPassword"
                                 type="password"
                                 placeholder="Re-enter your password"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 disabled={isLoading}
                                 className="h-11"
                                 autoComplete="new-password"

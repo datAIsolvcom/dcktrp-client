@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import { Message as MessageType } from '@/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import Message from './Message';
 
@@ -22,7 +21,7 @@ export default function MessageList({ messages, isLoading, streamingMessage }: M
 
     if (isLoading) {
         return (
-            <div className="flex-1 space-y-4 p-4">
+            <div className="flex-1 overflow-y-auto space-y-4 p-4">
                 {[1, 2, 3].map((i) => (
                     <div key={i} className="flex gap-3">
                         <Skeleton className="h-8 w-8 rounded-full" />
@@ -53,7 +52,7 @@ export default function MessageList({ messages, isLoading, streamingMessage }: M
     }
 
     return (
-        <ScrollArea className="flex-1" ref={scrollRef}>
+        <div className="flex-1 overflow-y-auto" ref={scrollRef}>
             <div className="flex flex-col">
                 {messages.map((message) => (
                     <Message key={message.id} message={message} />
@@ -63,6 +62,6 @@ export default function MessageList({ messages, isLoading, streamingMessage }: M
                 )}
                 <div ref={bottomRef} />
             </div>
-        </ScrollArea>
+        </div>
     );
 }
