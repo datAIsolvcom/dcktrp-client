@@ -114,10 +114,10 @@ export default function ConversationSidebar({
                 {user && (
                     <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white dark:bg-slate-800">
                         <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-semibold">
-                            {user.username[0].toUpperCase()}
+                            {user.username?.[0]?.toUpperCase() || user.user_id[0].toUpperCase()}
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium truncate">{user.username}</p>
+                            <p className="text-sm font-medium truncate">{user.username || user.user_id}</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                         </div>
                     </div>
