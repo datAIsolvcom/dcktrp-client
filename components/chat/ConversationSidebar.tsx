@@ -49,29 +49,31 @@ const ConversationSidebar = memo(function ConversationSidebar({
             "border-r bg-slate-50 dark:bg-slate-900 flex flex-col h-full min-h-0 transition-all duration-300",
             isCollapsed ? "w-16" : "w-80"
         )}>
-            {/* Toggle button */}
-            <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute top-4 -right-3 z-10 h-6 w-6 p-0 rounded-full bg-white dark:bg-slate-800 border shadow-md hover:bg-slate-100 dark:hover:bg-slate-700"
-                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-                {isCollapsed ? (
-                    <ChevronRight className="h-4 w-4" />
-                ) : (
-                    <ChevronLeft className="h-4 w-4" />
-                )}
-            </Button>
-
             <div className="p-4 space-y-4 flex-shrink-0">
-                {!isCollapsed && (
-                    <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
+                    {!isCollapsed && (
                         <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             Chat Testing
                         </h2>
-                    </div>
-                )}
+                    )}
+                    {/* Toggle button - now in header */}
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={cn(
+                            "h-8 w-8 p-0 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 flex-shrink-0",
+                            isCollapsed && "mx-auto"
+                        )}
+                        title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                    >
+                        {isCollapsed ? (
+                            <ChevronRight className="h-4 w-4" />
+                        ) : (
+                            <ChevronLeft className="h-4 w-4" />
+                        )}
+                    </Button>
+                </div>
                 <Button
                     onClick={onNewConversation}
                     className={cn(
@@ -104,7 +106,7 @@ const ConversationSidebar = memo(function ConversationSidebar({
                                 key={conversation.id}
                                 className={cn(
                                     'group relative flex items-center rounded-lg text-sm cursor-pointer transition-all',
-                                    isCollapsed ? 'justify-center px-2 py-3' : 'gap-3 px-3 py-3',
+                                    isCollapsed ? 'justify-center px-2 py-3' : 'px-3 py-3',
                                     currentConversationId === conversation.id
                                         ? 'bg-white dark:bg-slate-800 shadow-sm'
                                         : 'hover:bg-white/50 dark:hover:bg-slate-800/50'
@@ -112,9 +114,10 @@ const ConversationSidebar = memo(function ConversationSidebar({
                                 onClick={() => onSelectConversation(conversation.id)}
                                 title={isCollapsed ? conversation.title || 'Untitled Chat' : undefined}
                             >
-                                <MessageSquare className={cn("h-4 w-4 text-gray-500", isCollapsed ? "" : "flex-shrink-0")} />
-                                {!isCollapsed && (
-                                    <>
+                                {isCollapsed ? (
+                                    <MessageSquare className="h-4 w-4 text-gray-500" />
+                                ) : (
+                                    <div className="flex items-center w-full gap-2">
                                         <div className="flex-1 min-w-0">
                                             <p className="font-medium truncate">
                                                 {(conversation.title || 'Untitled Chat').length > 30
@@ -134,7 +137,7 @@ const ConversationSidebar = memo(function ConversationSidebar({
                                         >
                                             <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
                                         </Button>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         ))

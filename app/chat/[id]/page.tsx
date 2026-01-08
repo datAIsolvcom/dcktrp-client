@@ -57,7 +57,7 @@ export default function ChatConversationPage() {
             setSkipNextLoad(false);
             return;
         }
-        
+
         if (currentConversationId) {
             loadMessages(currentConversationId);
         } else {
@@ -185,10 +185,21 @@ export default function ChatConversationPage() {
                     conversation_id: conversationId || undefined,
                     ...(settings.division_filter.length > 0 ? { division_filter: settings.division_filter } : {}),
                     ...(settings.access_filter.length > 0 ? { access_filter: settings.access_filter } : {}),
-                    conversation_history: messages.slice(-3).map((m) => ({
-                        role: m.role,
-                        content: m.content,
-                    })),
+                    conversation_history: messages.slice(-3).map((m) => {
+                        // Check if message has saved multimodal_content in metadata
+                        if (m.metadata?.multimodal_content) {
+                            // Use saved multimodal content for this message (preserves file context)
+                            return {
+                                role: m.role,
+                                content: m.metadata.multimodal_content,
+                            };
+                        }
+                        // Otherwise use text content
+                        return {
+                            role: m.role,
+                            content: m.content,
+                        };
+                    }),
                 },
                 (chunk) => {
                     if (chunk.conversation_id && !returnedConversationId) {
